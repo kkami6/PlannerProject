@@ -29,10 +29,12 @@ namespace DataLayer.Contexts
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
+
             builder.ApplyConfigurationsFromAssembly(typeof(ActivityConfiguration).Assembly);
             builder.ApplyConfiguration(new UserConfiguration());
             builder.ApplyConfiguration(new DailyRemindersConfiguration());
-            base.OnModelCreating(builder);
+            
         }
     }
 }
