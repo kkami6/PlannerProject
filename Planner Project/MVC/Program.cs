@@ -24,6 +24,13 @@ namespace MVC
                 .AddEntityFrameworkStores<PlannerDbContext>()
                 .AddDefaultTokenProviders();
 
+            //controllers
+            builder.Services.AddScoped<ActivityContext>();
+            builder.Services.AddScoped<AppointmentActivityContext>();
+            builder.Services.AddScoped<DailyReminderContext>();
+            builder.Services.AddScoped<HolidayContext>();
+            builder.Services.AddScoped<TaskActivityContext>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

@@ -1,27 +1,40 @@
 using Microsoft.AspNetCore.Mvc;
-using MVC.Models;
+using DataLayer.Contexts;
+using System.Security.Claims;
 using System.Diagnostics;
+using MVC.Models;
 
 namespace MVC.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly TaskActivityContext _taskContext;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, TaskActivityContext taskContext)
         {
             _logger = logger;
+            _taskContext = taskContext;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                var allTasks = await _taskContext.ReadAllAsync();
+
+                ViewBag.PendingTasksCount = allTasks.Count(t => t.UserId == userId && !t.IsCompleted);
+            }
+            else
+            {
+                ViewBag.PendingTasksCount = 0;
+            }
             return View();
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+        public IActionResult Privacy() => View();
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
